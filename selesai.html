@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Selesai — Modul LHO</title>
+<style>
+:root{--primary:#4338ca;--accent:#f59e0b;--pink:#ec4899;--ink:#0f172a;--muted:#64748b;--line:#e5e7eb;--bg:#fdfcfb;--soft:#eef2ff;--t1:#f59e0b;--t2:#ec4899;--shadow:0 8px 24px rgba(15,23,42,.08);--shadow-lg:0 24px 60px rgba(15,23,42,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:110px;min-height:100vh;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;z-index:0}
+.orb.a{width:500px;height:500px;background:#fbbf24;top:-150px;left:-100px;animation:float1 18s ease-in-out infinite}
+.orb.b{width:600px;height:600px;background:#ec4899;bottom:-200px;right:-180px;animation:float2 22s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,40px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-40px)}}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:999;background:rgba(0,0,0,.05)}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--pink),var(--primary));transition:width .4s}
+.dock{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(15,23,42,.08);border-radius:999px;padding:8px;box-shadow:var(--shadow-lg);display:flex;gap:4px;z-index:900;max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
+.dock::-webkit-scrollbar{display:none}
+.dock a{padding:10px 14px;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:all .2s}
+.dock a:hover{background:var(--soft);color:var(--primary)}.dock a.active{background:var(--ink);color:#fff;box-shadow:0 6px 16px rgba(15,23,42,.3)}
+.hero{text-align:center;padding:80px 24px 30px;max-width:900px;margin:0 auto;position:relative;z-index:1}
+.trophy{font-size:7rem;display:inline-block;animation:floatY 2.5s ease-in-out infinite;filter:drop-shadow(0 20px 40px rgba(245,158,11,.4))}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-18px) rotate(5deg)}}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:16px 0 14px}
+.gradient-text{background:linear-gradient(120deg,#fbbf24,#ec4899,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:1.1rem;max-width:600px;margin:0 auto}
+.section{padding:20px 24px 60px;max-width:900px;margin:0 auto;position:relative;z-index:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:30px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;text-align:center;box-shadow:var(--shadow);transition:transform .3s;position:relative;overflow:hidden}
+.stat:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t1),var(--t2))}
+.stat .n{font-size:2.2rem;font-weight:800;display:block;background:linear-gradient(135deg,var(--t1),var(--t2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:800;margin-top:4px}
+.card{background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow);padding:30px;margin-bottom:22px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t1),var(--t2))}
+.card h2{font-size:1.3rem;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.card p{color:#334155;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px}
+.badge-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}
+.badge-item{text-align:center;padding:22px 12px;border-radius:16px;border:2px dashed var(--line);background:#fafbff;opacity:.5;transition:all .3s}
+.badge-item.done{opacity:1;border-style:solid;border-color:#10b981;background:linear-gradient(180deg,#f0fdf4,#fff);box-shadow:0 12px 24px -10px #10b981}
+.badge-item .emoji{font-size:2.4rem;display:block;margin-bottom:8px}
+.badge-item .t{font-weight:800;font-size:.88rem}
+.badge-item .s{font-size:.75rem;color:var(--muted);margin-top:4px}
+.btn{border:none;cursor:pointer;font-family:inherit;padding:16px 32px;border-radius:14px;font-size:1rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .2s,box-shadow .2s}
+.btn-primary{background:linear-gradient(135deg,var(--t1),var(--t2));color:#fff;box-shadow:0 14px 30px -10px var(--t1);position:relative;overflow:hidden}
+.btn-primary::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+.btn-primary:hover{transform:translateY(-3px)}.btn-primary:hover::after{left:100%}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--soft);border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+.center{text-align:center}
+.footer{text-align:center;padding:40px 24px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);background:#fff;margin-top:60px}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:2000;display:none}
+
+/* ========== UJIAN AKHIR + QR ========== */
+.qr-card{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:26px;padding:40px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.qr-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--t1),var(--t2))}
+.qr-card::after{content:"";position:absolute;bottom:-120px;right:-120px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.12),transparent 70%);pointer-events:none}
+.qr-frame{position:relative;width:100%;aspect-ratio:1;padding:16px;border-radius:22px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--t1),var(--t2)) border-box;border:3px solid transparent;box-shadow:0 22px 44px -16px rgba(79,70,229,.5);transition:transform .3s}
+.qr-frame:hover{transform:scale(1.03) rotate(-1deg)}
+.qr-frame img{width:100%;height:100%;object-fit:contain;border-radius:12px;display:block}
+.qr-frame::before{content:"";position:absolute;top:-12px;left:-12px;right:-12px;bottom:-12px;border-radius:28px;border:2px dashed rgba(99,102,241,.25);animation:qrSpin 24s linear infinite;pointer-events:none}
+@keyframes qrSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.qr-info{position:relative;z-index:1}
+.kicker-qr{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--t1),var(--t2));padding:7px 16px;border-radius:999px;margin-bottom:16px;box-shadow:0 8px 22px -6px var(--t1)}
+.qr-info h3{font-size:clamp(1.4rem,3vw,1.8rem);font-weight:800;letter-spacing:-.01em;line-height:1.2;margin-bottom:12px}
+.qr-info h3 .grad-qr{background:linear-gradient(120deg,var(--t1),var(--t2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.qr-info > p{color:#334155;margin-bottom:18px;font-size:.98rem}
+.qr-list{list-style:none;padding:0;margin:0 0 24px}
+.qr-list li{display:flex;align-items:center;gap:12px;padding:9px 0;color:#334155;font-size:.93rem;font-weight:600;border-bottom:1px dashed var(--line)}
+.qr-list li:last-child{border-bottom:none}
+.qr-list li .emo{display:inline-flex;width:32px;height:32px;border-radius:10px;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--soft),#fff);font-size:1rem;flex-shrink:0}
+.qr-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-qr{background:linear-gradient(135deg,var(--t1),var(--t2));color:#fff;box-shadow:0 12px 28px -8px var(--t1)}
+.btn-qr:hover{transform:translateY(-3px);box-shadow:0 18px 34px -8px var(--t1)}
+.btn-dl{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-dl:hover{background:var(--soft);border-color:var(--t1);color:var(--t1);transform:translateY(-3px)}
+
+@media(max-width:820px){
+  .qr-card{grid-template-columns:1fr;gap:26px;padding:28px 22px}
+  .qr-frame{max-width:260px;margin:0 auto}
+}
+@media(max-width:640px){
+  .section{padding:20px 18px 60px}
+  .card{padding:22px}
+}
+</style></head><body data-page="selesai">
+<div class="orb a"></div><div class="orb b"></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="dock">
+<a href="index.html" data-page="index"><span class="icon">🏠</span>Home</a>
+<a href="peta.html" data-page="peta"><span class="icon">🗺️</span>Peta</a>
+<a href="kapsul-1.html" data-page="k1"><span class="icon">📘</span>1</a>
+<a href="kapsul-2.html" data-page="k2"><span class="icon">🧩</span>2</a>
+<a href="kapsul-3.html" data-page="k3"><span class="icon">⚖️</span>3</a>
+<a href="kapsul-4.html" data-page="k4"><span class="icon">🔬</span>4</a>
+<a href="kapsul-5.html" data-page="k5"><span class="icon">✍️</span>5</a>
+<a href="kapsul-6.html" data-page="k6"><span class="icon">🎤</span>6</a>
+<a href="selesai.html" data-page="selesai"><span class="icon">🏆</span>Selesai</a>
+</nav>
+
+<header class="hero">
+<span class="trophy">🏆</span>
+<h1>Kamu Menuntaskan <span class="gradient-text">Modul LHO</span>!</h1>
+<p id="greet">Memuat hasil…</p>
+</header>
+
+<section class="section">
+<div class="stats">
+<div class="stat"><span class="n" id="statKapsul">0/6</span><span class="l">Kapsul Selesai</span></div>
+<div class="stat"><span class="n" id="statXP">0</span><span class="l">Total XP</span></div>
+<div class="stat"><span class="n" id="statBadge">🔒</span><span class="l">Badge</span></div>
+</div>
+
+<div class="card">
+<h2>🎖 Koleksi Badge</h2>
+<div class="badge-box" id="badgeBox"></div>
+</div>
+
+<div class="card">
+<h2>📌 Yang Sudah Kamu Kuasai</h2>
+<p>✅ Mengenal definisi, ciri, dan struktur teks LHO.</p>
+<p>✅ Membedakan LHO dengan teks deskripsi.</p>
+<p>✅ Memilah fakta dan opini dalam kalimat.</p>
+<p>✅ Mengumpulkan data dengan satuan & metode jelas.</p>
+<p>✅ Menulis laporan hasil observasi lengkap.</p>
+<p>✅ Mempresentasikan laporan dengan data kuat.</p>
+</div>
+
+<!-- ================= UJIAN AKHIR (QR) ================= -->
+<div class="card" style="padding:0;background:transparent;border:none;box-shadow:none">
+<div class="qr-card">
+<div class="qr-frame">
+<img src="qr.png" alt="QR Ujian Akhir">
+</div>
+<div class="qr-info">
+<span class="kicker-qr">Langkah Terakhir</span>
+<h3>Scan & Kerjakan <span class="grad-qr">Ujian Akhir</span></h3>
+<p>Selamat! Kamu sudah menuntaskan seluruh kapsul. Sekarang saatnya menguji pemahamanmu tentang teks Laporan Hasil Observasi melalui ujian akhir.</p>
+<ul class="qr-list">
+<li><span class="emo">📱</span> Buka kamera atau aplikasi pemindai QR</li>
+<li><span class="emo">✍️</span> Jawab semua soal secara mandiri & jujur</li>
+<li><span class="emo">⏱️</span> Alokasi waktu 30 menit</li>
+<li><span class="emo">🏆</span> Raih skor minimal 75 untuk lulus</li>
+</ul>
+<div class="qr-actions">
+<a href="qr.png" download class="btn btn-dl">⬇️ Unduh QR</a>
+<a href="peta.html" class="btn btn-qr">📚 Ulang Materi</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card center">
+<h2 style="justify-content:center">Langkah Selanjutnya</h2>
+<p style="margin-bottom:24px;justify-content:center">Setelah ujian selesai, tulis laporan tentang objek di sekitarmu. Gunakan data nyata, bukan opini.</p>
+<a class="btn btn-primary" href="index.html">🏠 Kembali ke Home</a>
+<a class="btn btn-ghost" href="peta.html" style="margin-left:10px">🗺️ Lihat Peta</a>
+</div>
+</section>
+
+<div class="footer"><strong>Cermat Mengamati · Modul LHO Interaktif</strong><br>Kelompok 2 · MTS Al Washliyah Gedung Johor Medan · 2026</div>
+<canvas id="confetti"></canvas>
+
+<script>
+const KEY='lho_progress_v3';let state=JSON.parse(localStorage.getItem(KEY)||'{"kapsul":[],"xp":0}');
+function updateStats(){const f=document.getElementById('progressFill');if(f)f.style.width=Math.min(100,(state.kapsul.length/6)*100)+'%';const sc=document.getElementById('statKapsul');if(sc)sc.textContent=state.kapsul.length+'/6';const sx=document.getElementById('statXP');if(sx)sx.textContent=state.xp;const sb=document.getElementById('statBadge');if(sb)sb.textContent=state.kapsul.length>=6?'🏅':'🔒';const g=document.getElementById('greet');if(g){if(state.kapsul.length>=6)g.textContent='Hebat! Kamu mengumpulkan '+state.xp+' XP dan membuka badge juara. 🎉';else g.textContent='Kamu sudah menyelesaikan '+state.kapsul.length+' dari 6 kapsul ('+state.xp+' XP). Ayo lanjutkan!';}const list=[{id:'k1',e:'📘',t:'Pengenal LHO'},{id:'k2',e:'🧩',t:'Ahli Struktur'},{id:'k3',e:'⚖️',t:'Detektif Fakta'},{id:'k4',e:'🔬',t:'Periset Cermat'},{id:'k5',e:'✍️',t:'Penulis LHO'},{id:'k6',e:'🎤',t:'Presenter Hebat'}];const box=document.getElementById('badgeBox');if(box)box.innerHTML=list.map(b=>`<div class="badge-item ${state.kapsul.includes(b.id)?'done':''}"><span class="emoji">${b.e}</span><div class="t">${b.t}</div><div class="s">${state.kapsul.includes(b.id)?'✨ Terbuka':'🔒 Terkunci'}</div></div>`).join('');}
+function fireConfetti(){const c=document.getElementById('confetti');if(!c)return;c.style.display='block';c.width=innerWidth;c.height=innerHeight;const ctx=c.getContext('2d');const colors=['#f59e0b','#ec4899','#4f46e5','#10b981','#fbbf24'];const parts=Array.from({length:180},()=>({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*16,vy:Math.random()*-16-4,size:Math.random()*10+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*Math.PI,vr:(Math.random()-.5)*.2}));let f=0;function loop(){ctx.clearRect(0,0,c.width,c.height);parts.forEach(p=>{p.vy+=.4;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.6);ctx.restore();});f++;if(f<240)requestAnimationFrame(loop);else{ctx.clearRect(0,0,c.width,c.height);c.style.display='none';}}loop();}
+document.addEventListener('DOMContentLoaded',()=>{updateStats();const p=document.body.dataset.page;if(p)document.querySelectorAll('.dock a').forEach(a=>{if(a.dataset.page===p)a.classList.add('active');});if(state.kapsul.length>=6)setTimeout(fireConfetti,600);});
+</script>
+</body></html>

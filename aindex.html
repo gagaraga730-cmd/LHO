@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cermat Mengamati — Modul LHO</title>
+<style>
+:root{--primary:#4338ca;--accent:#f59e0b;--pink:#ec4899;--ink:#0f172a;--muted:#64748b;--line:#e5e7eb;--bg:#fdfcfb;--soft:#eef2ff;--t1:#4f46e5;--t2:#ec4899;--shadow:0 8px 24px rgba(15,23,42,.08);--shadow-lg:0 24px 60px rgba(15,23,42,.14)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;padding-bottom:110px}
+::selection{background:var(--accent);color:#fff}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:999;background:rgba(0,0,0,.05)}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--pink),var(--primary));transition:width .4s}
+.dock{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(15,23,42,.08);border-radius:999px;padding:8px;box-shadow:var(--shadow-lg);display:flex;gap:4px;z-index:900;max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
+.dock::-webkit-scrollbar{display:none}
+.dock a{padding:10px 14px;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:all .2s}
+.dock a:hover{background:var(--soft);color:var(--primary)}
+.dock a.active{background:var(--ink);color:#fff;box-shadow:0 6px 16px rgba(15,23,42,.3)}
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:80px 24px 140px;text-align:center;color:#fff}
+.hero-bg{position:absolute;inset:0;background:url('cover.png') center/cover no-repeat,#1e293b;transform:scale(1.05);animation:slowZoom 20s ease-in-out infinite alternate}
+@keyframes slowZoom{from{transform:scale(1.05)}to{transform:scale(1.15)}}
+.hero-overlay{position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(99,102,241,.55) 0,transparent 55%),radial-gradient(circle at 80% 70%,rgba(236,72,153,.45) 0,transparent 55%),linear-gradient(180deg,rgba(15,23,42,.35) 0,rgba(15,23,42,.55) 60%,rgba(15,23,42,.9) 100%)}
+.hero-inner{position:relative;z-index:2;max-width:900px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:8px 18px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;backdrop-filter:blur(10px);animation:fadeUp .8s ease both}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(2.2rem,5.5vw,4rem);line-height:1.05;font-weight:800;letter-spacing:-.02em;margin-bottom:20px;text-shadow:0 4px 30px rgba(0,0,0,.4);animation:fadeUp .8s ease .1s both}
+.hero h1 .grad{background:linear-gradient(120deg,#fbbf24,#f472b6,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:clamp(1rem,1.6vw,1.2rem);max-width:640px;margin:0 auto 32px;color:rgba(255,255,255,.92);animation:fadeUp .8s ease .2s both}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+.btn{border:none;cursor:pointer;font-family:inherit;padding:16px 32px;border-radius:14px;font-size:1rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:transform .2s,box-shadow .2s}
+.btn-primary{background:linear-gradient(135deg,#f59e0b,#ec4899);color:#fff;box-shadow:0 12px 30px rgba(236,72,153,.5);position:relative;overflow:hidden}
+.btn-primary::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+.btn-primary:hover{transform:translateY(-3px)}
+.btn-primary:hover::after{left:100%}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(10px)}
+.btn-ghost:hover{background:rgba(255,255,255,.22);transform:translateY(-3px)}
+.hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:48px;animation:fadeUp .8s ease .4s both}
+.hero-stats div{text-align:center}
+.hero-stats .n{font-size:1.6rem;font-weight:800;color:#fbbf24}
+.hero-stats .l{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.75)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.scroll-hint{position:absolute;bottom:130px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+.section{padding:80px 24px;max-width:1180px;margin:0 auto;position:relative}
+.section-title{text-align:center;margin-bottom:48px}
+.section-title h2{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;margin-bottom:12px;letter-spacing:-.01em}
+.section-title p{color:var(--muted);max-width:600px;margin:0 auto;font-size:1.05rem}
+
+/* ========== IDENTITAS MODUL ========== */
+.id-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);position:relative;margin-bottom:22px}
+.id-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t1),var(--t2))}
+.id-head{display:flex;align-items:center;gap:14px;padding:24px 28px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#fafbff,#fff)}
+.id-head .ic{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--t1),var(--t2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 10px 22px -8px var(--t1);flex-shrink:0}
+.id-head h3{font-size:1.15rem;font-weight:800;margin-bottom:2px}
+.id-head p{font-size:.85rem;color:var(--muted)}
+.id-table{width:100%;border-collapse:collapse;font-size:.94rem}
+.id-table tr{border-bottom:1px solid var(--line)}
+.id-table tr:last-child{border-bottom:none}
+.id-table td{padding:14px 28px;vertical-align:top}
+.id-table td:first-child{font-weight:800;color:var(--t1);width:220px;background:linear-gradient(90deg,rgba(238,242,255,.5),transparent)}
+.id-table td:last-child{color:#334155}
+.id-table tr:hover{background:#fafbff}
+
+/* ========== CP TABLE ========== */
+.cp-table{width:100%;border-collapse:collapse;font-size:.93rem;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.cp-table thead{background:linear-gradient(135deg,var(--t1),var(--t2))}
+.cp-table thead th{padding:14px 20px;text-align:left;font-weight:800;color:#fff;font-size:.88rem;letter-spacing:.5px}
+.cp-table tbody tr{border-bottom:1px solid var(--line)}
+.cp-table tbody tr:last-child{border-bottom:none}
+.cp-table tbody tr:hover{background:#fafbff}
+.cp-table tbody td{padding:16px 20px;vertical-align:top;color:#334155}
+.cp-table tbody td:first-child{font-weight:800;color:var(--t1);width:32%}
+.cp-intro{background:linear-gradient(135deg,var(--soft),#fff);border-left:4px solid var(--t1);border-radius:12px;padding:18px 20px;margin-bottom:22px;font-size:.95rem;color:#334155;font-weight:500}
+
+/* ========== PROFIL GRID ========== */
+.profil-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.profil-item{border-radius:14px;padding:20px;background:#fff;border:1px solid var(--line);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+.profil-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pc,#4f46e5)}
+.profil-item:hover{transform:translateY(-4px);box-shadow:0 18px 36px -12px rgba(15,23,42,.15)}
+.profil-item .pi-icon{font-size:1.6rem;margin-bottom:8px;display:block}
+.profil-item h4{font-size:1rem;font-weight:800;margin-bottom:6px;color:var(--pc,#4f46e5)}
+.profil-item p{font-size:.88rem;color:#475569;line-height:1.55}
+.p1{--pc:#4338ca}.p2{--pc:#2563eb}.p3{--pc:#0d9488}.p4{--pc:#f59e0b}.p5{--pc:#ec4899}.p6{--pc:#7c3aed}
+
+/* ========== FITUR ========== */
+.feature-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.feature{background:#fff;border-radius:20px;border:1px solid var(--line);padding:28px;text-align:center;transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+.feature::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--fc1,#4f46e5),var(--fc2,#ec4899));opacity:0;transition:opacity .3s}
+.feature:hover{transform:translateY(-6px);box-shadow:0 24px 50px -12px rgba(15,23,42,.15)}
+.feature:hover::before{opacity:1}
+.feature .i{font-size:2.5rem;display:inline-flex;width:70px;height:70px;align-items:center;justify-content:center;border-radius:18px;background:linear-gradient(135deg,var(--fc1,#4f46e5),var(--fc2,#ec4899));color:#fff;margin-bottom:16px;box-shadow:0 12px 24px -8px var(--fc1,#4f46e5)}
+.feature h3{font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.feature p{color:var(--muted);font-size:.9rem}
+.f1{--fc1:#2563eb;--fc2:#06b6d4}
+.f2{--fc1:#f59e0b;--fc2:#ec4899}
+.f3{--fc1:#10b981;--fc2:#84cc16}
+.f4{--fc1:#7c3aed;--fc2:#a855f7}
+.cta-box{background:linear-gradient(135deg,var(--t1),var(--t2));border-radius:24px;padding:60px 32px;text-align:center;color:#fff;box-shadow:0 30px 60px -20px var(--t1);position:relative;overflow:hidden}
+.cta-box::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.15) 1px,transparent 1px);background-size:22px 22px;opacity:.4}
+.cta-box h2{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;margin-bottom:12px;position:relative}
+.cta-box p{color:rgba(255,255,255,.9);margin-bottom:28px;position:relative;font-size:1.05rem}
+.cta-box .btn{background:#fff;color:var(--t1);position:relative;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.cta-box .btn:hover{transform:translateY(-3px)}
+.footer{text-align:center;padding:40px 24px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);background:#fff;margin-top:60px}
+.chat-fab{position:fixed;bottom:100px;right:24px;z-index:950;width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#4f46e5,#ec4899);color:#fff;font-size:1.6rem;box-shadow:0 12px 30px rgba(79,70,229,.5);transition:transform .2s,background .2s;display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1}
+.chat-fab:hover{transform:scale(1.08) rotate(-6deg)}
+.chat-fab .pulse{position:absolute;inset:0;border-radius:50%;background:inherit;animation:ring 2s ease-out infinite;z-index:-1}
+@keyframes ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
+.chat-panel{position:fixed;bottom:176px;right:24px;z-index:960;width:390px;max-width:calc(100vw - 32px);height:580px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .3s}
+.chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+.chat-head{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:12px}
+.chat-head .av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.chat-head h4{font-size:.98rem;margin-bottom:2px;font-weight:800}
+.chat-head p{font-size:.75rem;opacity:.88}
+.chat-close{margin-left:auto;background:transparent;border:none;color:#fff;font-size:1.2rem;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.chat-close:hover{background:rgba(255,255,255,.2)}
+.chat-modes{display:flex;gap:6px;padding:12px;background:#f8fafc;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
+.chat-modes::-webkit-scrollbar{display:none}
+.mode-chip{padding:7px 14px;border-radius:999px;font-size:.76rem;font-weight:700;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s}
+.mode-chip.active{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-color:transparent}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;background:linear-gradient(180deg,#fafbfc,#fff);display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:6px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.msg{max-width:85%;padding:11px 15px;border-radius:15px;font-size:.88rem;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;animation:fadeUp .3s ease both}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-bottom-right-radius:4px;box-shadow:0 6px 14px -6px #4f46e5}
+.msg.ai{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;box-shadow:0 4px 12px -6px rgba(15,23,42,.08)}
+.msg.typing{display:flex;gap:4px;padding:14px 18px}
+.msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.msg.typing span:nth-child(2){animation-delay:.2s}
+.msg.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chat-input{display:flex;gap:8px;padding:12px;background:#fff;border-top:1px solid var(--line)}
+.chat-input input{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-family:inherit;font-size:.9rem;background:#fafbfc}
+.chat-input input:focus{outline:none;border-color:#4f46e5;background:#fff}
+.chat-input button{border:none;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-radius:12px;padding:0 20px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.86rem;box-shadow:0 8px 18px -6px #4f46e5}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:2000;display:none}
+.badge-modal{position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);z-index:1500;display:none;align-items:center;justify-content:center;padding:20px}
+.badge-modal.open{display:flex}
+.badge-card{background:#fff;border-radius:26px;padding:44px 34px;max-width:440px;text-align:center;box-shadow:var(--shadow-lg);animation:pop .4s}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.badge-card .emoji{font-size:5.5rem;margin-bottom:16px;display:block;animation:floatY 2s infinite;filter:drop-shadow(0 20px 40px rgba(245,158,11,.4))}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.badge-card h3{font-size:1.5rem;font-weight:800;margin-bottom:8px}
+.badge-card p{color:var(--muted);margin-bottom:24px}
+.badge-card button{background:linear-gradient(135deg,#f59e0b,#ec4899);color:#fff;border:none;padding:14px 32px;border-radius:12px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem}
+@media(max-width:640px){
+  .chat-fab{bottom:96px;right:16px}
+  .chat-panel{bottom:172px;right:16px;height:65vh}
+  .section{padding:60px 20px}
+  .id-table td{padding:12px 18px;display:block;width:100%!important}
+  .id-table td:first-child{border-bottom:1px solid var(--line);padding-bottom:6px}
+  .id-table td:last-child{padding-top:6px}
+}
+</style></head><body data-page="index">
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="dock">
+<a href="index.html" data-page="index"><span class="icon">🏠</span>Home</a>
+<a href="peta.html" data-page="peta"><span class="icon">🗺️</span>Peta</a>
+<a href="kapsul-1.html" data-page="k1"><span class="icon">📘</span>1</a>
+<a href="kapsul-2.html" data-page="k2"><span class="icon">🧩</span>2</a>
+<a href="kapsul-3.html" data-page="k3"><span class="icon">⚖️</span>3</a>
+<a href="kapsul-4.html" data-page="k4"><span class="icon">🔬</span>4</a>
+<a href="kapsul-5.html" data-page="k5"><span class="icon">✍️</span>5</a>
+<a href="kapsul-6.html" data-page="k6"><span class="icon">🎤</span>6</a>
+<a href="selesai.html" data-page="selesai"><span class="icon">🏆</span>Selesai</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+<div class="hero-bg"></div><div class="hero-overlay"></div>
+<div class="hero-inner">
+<div class="eyebrow"><span class="dot"></span>Kurikulum Merdeka · Fase D · Kelas VIII</div>
+<h1>Cermat <span class="grad">Mengamati</span>,<br>Jujur Melaporkan</h1>
+<p class="lead">Petualangan 6 kapsul interaktif untuk menguasai <strong>Teks Laporan Hasil Observasi</strong>. Ditemani Kedan Belajar — pendamping belajarmu, bukan penulis laporanmu.</p>
+<div class="hero-actions">
+<a href="peta.html" class="btn btn-primary">🚀 Mulai Petualangan</a>
+<button class="btn btn-ghost" onclick="toggleChat()">🤖 Ngobrol dengan Kedan</button>
+</div>
+<div class="hero-stats">
+<div><div class="n">6</div><div class="l">Kapsul</div></div>
+<div><div class="n">4</div><div class="l">Pertemuan</div></div>
+<div><div class="n">3</div><div class="l">Mini-game</div></div>
+<div><div class="n">1</div><div class="l">Badge</div></div>
+</div>
+</div>
+<div class="scroll-hint">↓ Gulir ke bawah</div>
+</section>
+
+<!-- ================= IDENTITAS MODUL ================= -->
+<section class="section">
+<div class="section-title">
+<h2>📋 Identitas Modul</h2>
+<p>Informasi lengkap tentang modul ajar ini.</p>
+</div>
+
+<div class="id-card">
+<div class="id-head">
+<div class="ic">📘</div>
+<div>
+<h3>Cermat dalam Melaporkan Hasil Observasi</h3>
+<p>Bahasa Indonesia · Fase D · Kelas VIII SMP/MTs</p>
+</div>
+</div>
+<table class="id-table">
+<tr><td>Penyusun</td><td>Kelompok 2</td></tr>
+<tr><td>Institusi</td><td>MTS Al Washliyah Gedung Johor Medan</td></tr>
+<tr><td>Tahun Penyusunan</td><td>2026</td></tr>
+<tr><td>Jenjang / Mata Pelajaran</td><td>SMP/MTs / Bahasa Indonesia</td></tr>
+<tr><td>Fase · Kelas · Semester</td><td>Fase D · Kelas VIII · Semester 1 (Ganjil)</td></tr>
+<tr><td>Topik Bab</td><td>Bab 1 — Cermat dalam Melaporkan Hasil Observasi</td></tr>
+<tr><td>Alokasi Waktu</td><td>4 pertemuan × 3 × 40 menit (120 menit)<br><span style="color:var(--muted);font-size:.88rem">Pendahuluan 10 menit · Inti 100 menit · Penutup 10 menit</span></td></tr>
+<tr><td>Media Pendamping</td><td>Kedan Belajar — asisten AI kelas buatan tim sekolah</td></tr>
+<tr><td>Model Pembelajaran</td><td>Project Based Learning (PjBL), dipadukan dengan pembelajaran berdiferensiasi, SEL, dan blended learning</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ================= CAPAIAN PEMBELAJARAN ================= -->
+<section class="section" style="padding-top:0">
+<div class="section-title">
+<h2>🎯 Capaian Pembelajaran (CP) — Fase D</h2>
+<p>Empat elemen CP yang menjadi fondasi modul ini.</p>
+</div>
+
+<div class="cp-intro">
+Pada akhir Fase D, peserta didik mampu memahami, memaknai, mengevaluasi, dan menyajikan informasi dari berbagai jenis teks, termasuk teks laporan hasil observasi. Untuk topik <strong>Cermat dalam Melaporkan Hasil Observasi</strong>, CP dijabarkan menjadi empat elemen berikut:
+</div>
+
+<table class="cp-table">
+<thead>
+<tr>
+<th>Elemen CP</th>
+<th>Deskripsi Capaian</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🎧 Menyimak</td>
+<td>Peserta didik mampu menyimak dengan saksama, memahami, dan memaknai informasi dari teks laporan hasil observasi yang diperdengarkan atau dibacakan.</td>
+</tr>
+<tr>
+<td>📖 Membaca dan Memirsa</td>
+<td>Peserta didik mampu membaca teks LHO, mengevaluasi akurasi dan kualitas data, serta membedakan informasi faktual dari opini.</td>
+</tr>
+<tr>
+<td>✍️ Menulis dan Mencipta</td>
+<td>Peserta didik mampu menulis teks LHO berdasarkan penelitian sederhana dengan struktur, kaidah kebahasaan, dan data yang objektif.</td>
+</tr>
+<tr>
+<td>🎤 Berbicara dan Mempresentasikan</td>
+<td>Peserta didik mampu mempresentasikan laporan hasil observasi secara lisan dengan runtut, percaya diri, dan menjawab pertanyaan berdasarkan data.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<!-- ================= PROFIL PELAJAR PANCASILA ================= -->
+<section class="section" style="padding-top:0">
+<div class="section-title">
+<h2>🌟 Profil Pelajar Pancasila</h2>
+<p>Enam dimensi yang dikuatkan melalui aktivitas pembelajaran modul ini.</p>
+</div>
+
+<div class="profil-grid">
+<div class="profil-item p1">
+<span class="pi-icon">🧠</span>
+<h4>Bernalar Kritis</h4>
+<p>Menilai akurasi data, membedakan fakta dan opini, serta menimbang saran AI sebelum dipakai.</p>
+</div>
+<div class="profil-item p2">
+<span class="pi-icon">🎯</span>
+<h4>Mandiri</h4>
+<p>Menulis laporan sendiri dari data hasil observasi sendiri, serta mencatat keputusan atas saran AI.</p>
+</div>
+<div class="profil-item p3">
+<span class="pi-icon">🤝</span>
+<h4>Bergotong Royong</h4>
+<p>Observasi dan pengolahan data dilakukan dalam kelompok kecil; saling menanggapi saat presentasi.</p>
+</div>
+<div class="profil-item p4">
+<span class="pi-icon">🎨</span>
+<h4>Kreatif</h4>
+<p>Memilih objek dan cara menyajikan hasil secara menarik.</p>
+</div>
+<div class="profil-item p5">
+<span class="pi-icon">🕌</span>
+<h4>Beriman, Bertakwa, Berakhlak Mulia</h4>
+<p>Jujur mencatat data dan jujur menyebutkan bantuan AI.</p>
+</div>
+<div class="profil-item p6">
+<span class="pi-icon">🌏</span>
+<h4>Berkebinekaan Global</h4>
+<p>Menghargai perbedaan sudut pandang dan pilihan objek teman saat berdiskusi.</p>
+</div>
+</div>
+</section>
+
+<!-- ================= FITUR ================= -->
+<section class="section" style="padding-top:0">
+<div class="section-title">
+<h2>Apa yang Akan Kamu Pelajari? 🎯</h2>
+<p>Setiap kapsul dirancang singkat, interaktif, dan berbuah XP. Belajar LHO tanpa bosan.</p>
+</div>
+<div class="feature-grid">
+<div class="feature f1"><div class="i">📘</div><h3>Teori LHO</h3><p>Definisi, ciri, struktur, dan kaidah kebahasaan yang wajib kamu tahu.</p></div>
+<div class="feature f2"><div class="i">🎮</div><h3>Mini-game Seru</h3><p>Fakta/opini, benar-salah, dan timer presentasi. Belajar sambil bermain.</p></div>
+<div class="feature f3"><div class="i">📝</div><h3>Draft Terpandu</h3><p>Tulis laporanmu sendiri — dari judul sampai penutup. Tersimpan otomatis.</p></div>
+<div class="feature f4"><div class="i">🤖</div><h3>Kedan Belajar</h3><p>Tanya apa saja tentang LHO. Bukan penulis — teman berpikirmu.</p></div>
+</div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="section" style="padding-top:0">
+<div class="cta-box">
+<h2>Siap Memulai Petualangan? 🚀</h2>
+<p>6 kapsul menanti. Setiap kapsul = XP + badge. Kuasai LHO dalam 4 pertemuan.</p>
+<a href="peta.html" class="btn">Lihat Peta Perjalanan →</a>
+</div>
+</section>
+
+<div class="footer"><strong>Cermat Mengamati · Modul LHO Interaktif</strong><br>Kelompok 2 · MTS Al Washliyah Gedung Johor Medan · 2026</div>
+
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Buka/Tutup Kedan Belajar">🤖<span class="pulse"></span></button>
+<div class="chat-panel" id="chatPanel">
+<div class="chat-head"><div class="av">🤖</div><div><h4>Kedan Belajar</h4><p>Pendamping belajar</p></div><button class="chat-close" onclick="closeChat()" title="Tutup">✕</button></div>
+<div class="chat-modes">
+<button class="mode-chip active" data-mode="materi">📖 Materi</button>
+<button class="mode-chip" data-mode="faktaopini">⚖️ Fakta/Opini</button>
+<button class="mode-chip" data-mode="periksa">🔍 Periksa Data</button>
+<button class="mode-chip" data-mode="kerangka">📝 Kerangka</button>
+<button class="mode-chip" data-mode="presentasi">🎤 Presentasi</button>
+</div>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-input"><input id="chatInput" placeholder="Tulis pertanyaanmu…" onkeydown="if(event.key==='Enter')kirimPesan()"><button onclick="kirimPesan()">Kirim</button></div>
+</div>
+<canvas id="confetti"></canvas>
+<div class="badge-modal" id="badgeModal"><div class="badge-card"><span class="emoji">🏆</span><h3>Hebat! Modul Selesai</h3><p><strong id="finalXP">0 XP</strong></p><button onclick="closeBadge()">Tutup ✨</button></div></div>
+
+<script>
+const KEY='lho_progress_v3';
+let state=JSON.parse(localStorage.getItem(KEY)||'{"kapsul":[],"xp":0}');
+function saveState(){localStorage.setItem(KEY,JSON.stringify(state));updateStats();}
+function updateStats(){const pf=document.getElementById('progressFill');if(pf)pf.style.width=Math.min(100,(state.kapsul.length/6)*100)+'%';}
+function showToast(m){const t=document.createElement('div');t.textContent=m;t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:1500;box-shadow:0 10px 30px rgba(0,0,0,.3)';document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+
+let modeAktif='materi',quizState=null;
+function toggleChat(){
+  const p=document.getElementById('chatPanel');
+  const f=document.getElementById('chatFab');
+  const open=p.classList.toggle('open');
+  if(f)f.innerHTML=open?'✕':'🤖<span class="pulse"></span>';
+}
+function closeChat(){
+  const p=document.getElementById('chatPanel');
+  const f=document.getElementById('chatFab');
+  if(!p||!p.classList.contains('open'))return;
+  p.classList.remove('open');
+  if(f)f.innerHTML='🤖<span class="pulse"></span>';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeChat();});
+
+function tambahPesan(t,p='ai'){const b=document.getElementById('chatMessages');const d=document.createElement('div');d.className='msg '+p;d.textContent=t;b.appendChild(d);b.scrollTop=b.scrollHeight;}
+function pesanMengetik(){const b=document.getElementById('chatMessages');const d=document.createElement('div');d.className='msg ai typing';d.innerHTML='<span></span><span></span><span></span>';b.appendChild(d);b.scrollTop=b.scrollHeight;return d;}
+function balasChat(t,d=700){const ty=pesanMengetik();return new Promise(r=>setTimeout(()=>{ty.remove();tambahPesan(t,'ai');r();},d));}
+function mulaiModeChat(m){const p={materi:"Halo! 📖 Mode Materi aktif.\n\nTanyakan apa saja tentang LHO:\n• Apa itu kalimat definisi?\n• Bedanya LHO & deskripsi?\n• Struktur teks LHO?",faktaopini:"⚖️ Ayo main Fakta/Opini!\n\nKetik 'mulai' untuk soal pertama.",periksa:"🔍 Kirim catatan observasimu. Aku akan tanya sumber, metode, satuan.",kerangka:"📝 Kirim kerangka laporanmu. Aku tunjukkan bagian yang belum ada.",presentasi:"🎤 Ceritakan topik laporanmu. Aku tanya 2 hal tentang datamu."};balasChat(p[m]||p.materi,300);}
+document.querySelectorAll('.mode-chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.mode-chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');modeAktif=c.dataset.mode;quizState=null;mulaiModeChat(modeAktif);}));
+function kirimPesan(){const inp=document.getElementById('chatInput');const t=inp.value.trim();if(!t)return;tambahPesan(t,'user');inp.value='';prosesChat(t);}
+async function prosesChat(t){const l=t.toLowerCase();if(modeAktif==='faktaopini')return prosesFO(l);if(modeAktif==='materi')return prosesMateri(l);if(modeAktif==='periksa')return prosesPeriksa(t);if(modeAktif==='kerangka')return prosesKerangka(l);if(modeAktif==='presentasi')return prosesPresentasi(t);}
+async function prosesMateri(l){if(l.includes('definisi'))return balasChat("Kalimat definisi 📖 = menjelaskan arti objek, memakai 'adalah', 'ialah', 'merupakan'.\n\nContoh: Kantin adalah tempat warga sekolah membeli makanan.");if(l.includes('struktur'))return balasChat("Struktur LHO:\n1. Judul\n2. Deskripsi umum — definisi + klasifikasi\n3. Deskripsi bagian — rincian data\n4. Deskripsi manfaat — kegunaan\n5. Penutup (opsional)");if(l.includes('lho')&&l.includes('deskripsi'))return balasChat("LHO 📘 = data & pengamatan (objektif).\nDeskripsi 🎨 = kesan penulis (boleh subjektif).");if(l.includes('fakta')&&l.includes('opini'))return balasChat("Fakta ✅ = bisa dihitung/diukur.\nOpini 💭 = penilaian/perasaan.\n\nKata kunci opini: sangat, sekali, indah, paling, mungkin, pasti.");return balasChat("Aku hanya membahas topik LHO ya. Coba tanya soal struktur, ciri, kaidah kebahasaan, atau fakta-opini.");}
+const chatBank=[{k:"Meja kelas 8A berjumlah 16 buah.",j:"fakta",a:"Angka bisa dihitung."},{k:"Suasana perpustakaan sangat menyenangkan.",j:"opini",a:"Perasaan pribadi."},{k:"Lapangan memiliki 2 ring basket.",j:"fakta",a:"Jumlah konkret."},{k:"Guru kami paling ramah.",j:"opini",a:"Penilaian pribadi."},{k:"Pohon mangga setinggi 5 meter.",j:"fakta",a:"Ukuran bisa diukur."},{k:"Taman terlihat sangat indah.",j:"opini",a:"Penilaian."},{k:"Di perpustakaan ada 12 rak kayu.",j:"fakta",a:"Jumlah konkret."},{k:"Kantin pasti menjual makanan terenak.",j:"opini",a:"Dugaan + penilaian."}];
+async function prosesFO(l){if(!quizState){if(l.includes('mulai')||l.length<10){quizState={idx:0,benar:0,soal:[...chatBank].sort(()=>Math.random()-.5).slice(0,5)};return balasChat(`Soal 1 dari 5:\n\n"${quizState.soal[0].k}"\n\nKetik 'fakta' atau 'opini'.`);}return balasChat("Ketik 'mulai' untuk soal pertama ya!");}const s=quizState.soal[quizState.idx];const j=l.includes('fakta')?'fakta':l.includes('opini')?'opini':null;if(!j)return balasChat("Jawab 'fakta' atau 'opini' ya 😊");const b=j===s.j;if(b)quizState.benar++;quizState.idx++;let fb=b?`✅ Benar! ${s.a}`:`❌ Jawaban: ${s.j}. ${s.a}`;if(quizState.idx<quizState.soal.length){fb+=`\n\nSoal ${quizState.idx+1} dari 5:\n\n"${quizState.soal[quizState.idx].k}"`;return balasChat(fb);}const p=Math.round(quizState.benar/5*100);fb+=`\n\n📊 Skor: ${quizState.benar}/5 (${p}%)\n${p>=80?'🌟 Hebat!':p>=60?'👍 Bagus!':'💪 Coba lagi!'}`;quizState=null;return balasChat(fb,900);}
+async function prosesPeriksa(t){if(t.length<15)return balasChat("Kirim catatan observasimu dulu ya 📝");return balasChat("Aku periksa pakai 3 pertanyaan 🔍\n\n1. Sumber data?\n2. Metode — dihitung/diukur/ditaksir?\n3. Sudah ada satuan, waktu, tempat?");}
+async function prosesKerangka(l){if(l.length<20)return balasChat("Kirim kerangka laporanmu ya 📝");const a={judul:l.includes('judul'),umum:l.includes('umum')||l.includes('definisi'),bagian:l.includes('bagian')||l.includes('rinci'),manfaat:l.includes('manfaat')||l.includes('guna')};let r="📝 Hasil cek:\n";r+=a.judul?"✅ Judul ada\n":"❌ Judul belum ada\n";r+=a.umum?"✅ Deskripsi umum ada\n":"❌ Deskripsi umum belum ada\n";r+=a.bagian?"✅ Deskripsi bagian ada\n":"❌ Deskripsi bagian belum ada\n";r+=a.manfaat?"✅ Deskripsi manfaat ada\n":"❌ Deskripsi manfaat belum ada\n";return balasChat(r);}
+async function prosesPresentasi(t){if(t.length<10)return balasChat("Ceritakan topik laporanmu dulu 🎤");return balasChat("Oke! Aku jadi teman audiensmu 🎤\n\nPertanyaan 1:\nBerapa jumlah/ukuran objek yang kamu amati?\n\nPertanyaan 2:\nKapan pengamatan dilakukan?");}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  updateStats();
+  const page=document.body.dataset.page;
+  if(page)document.querySelectorAll('.dock a').forEach(a=>{if(a.dataset.page===page)a.classList.add('active');});
+  setTimeout(()=>{tambahPesan("Halo! 👋 Aku Kedan Belajar. Klik salah satu mode di atas, atau tanya apa saja tentang LHO.\n\n⚠️ Ingat: laporan tetap kamu tulis sendiri 🌟",'ai');},400);
+});
+</script>
+</body></html>

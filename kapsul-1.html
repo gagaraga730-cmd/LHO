@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kapsul 1 — Mengenal Teks LHO</title>
+<style>
+:root{--primary:#4338ca;--accent:#f59e0b;--pink:#ec4899;--ink:#0f172a;--muted:#64748b;--line:#e5e7eb;--bg:#fdfcfb;--soft:#eef2ff;--t1:#2563eb;--t2:#06b6d4;--shadow:0 8px 24px rgba(15,23,42,.08);--shadow-lg:0 24px 60px rgba(15,23,42,.14)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:110px;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:0}
+.orb.a{width:420px;height:420px;background:#818cf8;top:-120px;left:-120px;animation:float1 18s ease-in-out infinite}
+.orb.b{width:520px;height:520px;background:#f472b6;bottom:-180px;right:-180px;animation:float2 22s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-50px)}}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:999;background:rgba(0,0,0,.05)}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--pink),var(--primary));transition:width .4s}
+.dock{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(15,23,42,.08);border-radius:999px;padding:8px;box-shadow:var(--shadow-lg);display:flex;gap:4px;z-index:900;max-width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none}
+.dock::-webkit-scrollbar{display:none}
+.dock a{padding:10px 14px;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:all .2s}
+.dock a:hover{background:var(--soft);color:var(--primary)}.dock a.active{background:var(--ink);color:#fff;box-shadow:0 6px 16px rgba(15,23,42,.3)}
+.hero-sm{position:relative;padding:80px 24px 40px;text-align:center;overflow:hidden}
+.hero-sm::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 25% 15%,var(--t1) 0,transparent 50%),radial-gradient(circle at 75% 85%,var(--t2) 0,transparent 50%);opacity:.14}
+.hero-sm::after{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle,rgba(99,102,241,.18) 1px,transparent 1px);background-size:26px 26px;mask-image:radial-gradient(circle at 50% 30%,#000 20%,transparent 70%)}
+.hero-icon{font-size:4.5rem;display:inline-block;margin-bottom:14px;animation:floatY 3s ease-in-out infinite;filter:drop-shadow(0 12px 24px rgba(0,0,0,.15))}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+.kicker{display:inline-block;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:#fff;background:linear-gradient(135deg,var(--t1),var(--t2));padding:8px 18px;border-radius:999px;margin-bottom:18px;box-shadow:0 8px 22px -6px var(--t1)}
+.hero-sm h1{font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin-bottom:12px}
+.gradient-text{background:linear-gradient(120deg,var(--t1),var(--t2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sm p{color:var(--muted);font-size:1.05rem;max-width:620px;margin:0 auto}
+.section{padding:20px 24px 60px;max-width:900px;margin:0 auto;position:relative;z-index:1}
+.card{background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow);padding:30px;margin-bottom:22px;position:relative;overflow:hidden;transition:box-shadow .3s}
+.card:hover{box-shadow:var(--shadow-lg)}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t1),var(--t2))}
+.card h2{font-size:1.3rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.card h2 .i{display:inline-flex;width:42px;height:42px;border-radius:12px;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--t1),var(--t2));color:#fff;font-size:1.2rem;box-shadow:0 8px 20px -6px var(--t1);flex-shrink:0}
+.card h3{font-size:1.02rem;font-weight:800;margin:18px 0 8px;color:var(--t1)}
+.card p{color:#334155;margin-bottom:10px}
+.card ul,.card ol{padding-left:22px;color:#334155}.card li{margin-bottom:6px}
+.highlight{background:linear-gradient(135deg,var(--soft),#fff);border-left:4px solid var(--t1);padding:16px 18px;border-radius:12px;margin:14px 0;font-size:.95rem;font-weight:600;color:#334155}
+.quiz-q{margin-bottom:18px;padding:18px;border-radius:14px;background:#f8fafc;border:1px solid var(--line)}
+.quiz-q p{font-weight:800;margin-bottom:12px;color:var(--ink)}
+.option{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;font-size:.95rem;font-weight:600}
+.option:hover{border-color:var(--t1);background:var(--soft);transform:translateX(4px)}
+.option input{accent-color:var(--t1);width:18px;height:18px}
+.btn{border:none;cursor:pointer;font-family:inherit;padding:15px 28px;border-radius:14px;font-size:.95rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .2s,box-shadow .2s}
+.btn-primary{background:linear-gradient(135deg,var(--t1),var(--t2));color:#fff;box-shadow:0 12px 28px -8px var(--t1);position:relative;overflow:hidden}
+.btn-primary::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+.btn-primary:hover{transform:translateY(-3px)}.btn-primary:hover::after{left:100%}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--soft);border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+.center{text-align:center}
+.footer{text-align:center;padding:40px 24px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);background:#fff;margin-top:60px}
+#quizResult{font-weight:800;margin-top:16px;font-size:1rem}
+</style></head><body data-page="k1">
+<div class="orb a"></div><div class="orb b"></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="dock">
+<a href="index.html" data-page="index"><span class="icon">🏠</span>Home</a>
+<a href="peta.html" data-page="peta"><span class="icon">🗺️</span>Peta</a>
+<a href="kapsul-1.html" data-page="k1"><span class="icon">📘</span>1</a>
+<a href="kapsul-2.html" data-page="k2"><span class="icon">🧩</span>2</a>
+<a href="kapsul-3.html" data-page="k3"><span class="icon">⚖️</span>3</a>
+<a href="kapsul-4.html" data-page="k4"><span class="icon">🔬</span>4</a>
+<a href="kapsul-5.html" data-page="k5"><span class="icon">✍️</span>5</a>
+<a href="kapsul-6.html" data-page="k6"><span class="icon">🎤</span>6</a>
+<a href="selesai.html" data-page="selesai"><span class="icon">🏆</span>Selesai</a>
+</nav>
+<header class="hero-sm">
+<span class="kicker">Kapsul 1 · Pertemuan 1</span>
+<div><span class="hero-icon">📘</span></div>
+<h1>Mengenal <span class="gradient-text">Teks LHO</span></h1>
+<p>Sebelum menulis laporan, kita harus tahu dulu apa itu Laporan Hasil Observasi dan seperti apa bentuknya.</p>
+</header>
+<section class="section">
+<div class="card">
+<h2><span class="i">📖</span> Apa itu Teks LHO?</h2>
+<p><strong>Laporan Hasil Observasi (LHO)</strong> adalah teks yang menyajikan hasil pengamatan secara <strong>objektif</strong> berdasarkan fakta yang bisa dilihat, dihitung, diukur, atau diverifikasi.</p>
+<div class="highlight">💡 LHO bukan cerita imajinasi. LHO juga bukan opini pribadi. Semua informasi harus bisa dipertanggungjawabkan.</div>
+<h3>✨ Ciri-ciri Teks LHO</h3>
+<ul><li>Bersifat objektif dan faktual.</li><li>Ditulis berdasarkan hasil pengamatan langsung atau data yang sah.</li><li>Menggunakan bahasa baku dan formal.</li><li>Sering memakai istilah teknis sesuai objek.</li><li>Tidak memasukkan perasaan atau penilaian pribadi.</li></ul>
+<h3>🏗️ Struktur Teks LHO</h3>
+<ol><li><strong>Judul</strong> — menggambarkan objek yang diamati.</li><li><strong>Deskripsi umum</strong> — definisi dan klasifikasi objek.</li><li><strong>Deskripsi bagian</strong> — rincian data per bagian.</li><li><strong>Deskripsi manfaat</strong> — kegunaan objek.</li><li><strong>Penutup</strong> — simpulan singkat (opsional).</li></ol>
+</div>
+<div class="card">
+<h2><span class="i">🎮</span> Mini-game: Cek Pemahaman</h2>
+<p>Jawab 3 pertanyaan berikut. Kalau benar minimal 2, kamu siap lanjut ke kapsul berikutnya.</p>
+<div id="quiz" style="margin-top:18px"></div>
+<button class="btn btn-primary" onclick="cekQuiz()">Periksa Jawaban</button>
+<p id="quizResult"></p>
+</div>
+<div class="card center">
+<h2 style="justify-content:center"><span class="i">✅</span> Selesai Kapsul 1?</h2>
+<p style="margin-bottom:20px">Jika kamu sudah paham materi dan mini-game, tandai kapsul ini selesai untuk mendapat XP.</p>
+<button class="btn btn-primary" onclick="selesaikanKapsul('k1',20)">Tandai Selesai +20 XP</button>
+<a class="btn btn-ghost" href="kapsul-2.html" style="margin-left:10px">Lanjut ke Kapsul 2 →</a>
+</div>
+</section>
+<div class="footer"><strong>Cermat Mengamati · Modul LHO Interaktif</strong><br>Kelompok 2 · MTS Al Washliyah Gedung Johor Medan · 2026</div>
+<script>
+const KEY='lho_progress_v3';let state=JSON.parse(localStorage.getItem(KEY)||'{"kapsul":[],"xp":0}');
+function saveState(){localStorage.setItem(KEY,JSON.stringify(state));updateStats();}
+function updateStats(){const f=document.getElementById('progressFill');if(f)f.style.width=Math.min(100,(state.kapsul.length/6)*100)+'%';}
+function selesaikanKapsul(id,xp){if(!state.kapsul.includes(id)){state.kapsul.push(id);state.xp+=xp;saveState();showToast('✨ +'+xp+' XP! Kapsul selesai.');}else showToast('Sudah ditandai ✅');}
+function showToast(m){const t=document.createElement('div');t.textContent=m;t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:1500;box-shadow:0 10px 30px rgba(0,0,0,.3)';document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+const quizData=[{q:'Teks LHO menyajikan informasi berdasarkan...',o:['Opini penulis','Hasil pengamatan objektif','Imajinasi','Perasaan pribadi'],a:1},{q:'Bagian yang menjelaskan definisi dan klasifikasi objek disebut...',o:['Deskripsi bagian','Deskripsi manfaat','Deskripsi umum','Penutup'],a:2},{q:'Manakah yang BUKAN ciri teks LHO?',o:['Objektif','Faktual','Bahasa baku','Penuh perasaan pribadi'],a:3}];
+function renderQuiz(){document.getElementById('quiz').innerHTML=quizData.map((it,i)=>`<div class="quiz-q"><p>${i+1}. ${it.q}</p>${it.o.map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}</div>`).join('');}
+function cekQuiz(){let b=0;quizData.forEach((it,i)=>{const p=document.querySelector(`input[name="q${i}"]:checked`);if(p&&Number(p.value)===it.a)b++;});const r=document.getElementById('quizResult');if(b>=2){r.textContent=`✅ Benar ${b}/3. Hebat! Kamu siap lanjut.`;r.style.color='#166534';}else{r.textContent=`❌ Benar ${b}/3. Baca ulang materi, lalu coba lagi.`;r.style.color='#b91c1c';}}
+document.addEventListener('DOMContentLoaded',()=>{updateStats();renderQuiz();const p=document.body.dataset.page;if(p)document.querySelectorAll('.dock a').forEach(a=>{if(a.dataset.page===p)a.classList.add('active');});});
+</script>
+</body></html>
